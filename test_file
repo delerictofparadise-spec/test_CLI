@@ -1,0 +1,22 @@
+import unittest
+from unittest.mock import patch
+from newabcf import main
+
+class TestCLI(unittest.TestCase):
+
+    @patch("sys.argv", new=["newabcf.py", "--string", "abcde"])
+    def test_string_input(self):
+        with patch("builtins.print") as mock_print:
+            main()
+            mock_print.assert_called_with(5)
+
+    @patch("pathlib.Path.read_text", return_value="abcde123")
+    @patch("sys.argv", new=["newabcf.py", "--string", "ignored", "--file", "dummy.txt"])
+    def test_file_input_over_string(self, mock_read):
+        with patch("builtins.print") as mock_print:
+            main()
+            mock_print.assert_called_with(8)
+
+
+if __name__ == "__main__":
+    unittest.main()
